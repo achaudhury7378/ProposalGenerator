@@ -12,7 +12,6 @@ llama_model_client = OllamaChatCompletionClient(
 
 # Initialize Tavily client
 # (Set your API Key as TAVILY_API_KEY in env variable or replace below)
-tavily_client = TavilyClient(api_key="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")
 
 def tavily_search(topic, max_results=5):
     """Search blogs/articles using Tavily and return top result URLs."""
