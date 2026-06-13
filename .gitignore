@@ -1,1 +1,24 @@
+# Secrets / credentials
 .env
+.env.*
+openapikey.txt
+openapikey*.txt
+*.key
+.secret-patterns.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Generated proposals
+proposal_*.docx
+
+# Backups
+*.bundle
+
+# OS / editor
+.DS_Store
+.idea/
