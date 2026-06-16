@@ -126,7 +126,7 @@ workflow = (
 
 
 async def main():
-    task = "Create a proposal for supply chain optimization system"
+    task = "Create a proposal for risks in supply chian given current scenarions in oil shipment in midlle east"
     print(f"[WORKFLOW] starting: {task!r}\n")
 
     step = 0

@@ -43,7 +43,7 @@ async def _generate_queries(topic: str, num_queries: int) -> List[str]:
 async def _scrape_query(query: str, scrape_prompt: str) -> List[str]:
     """Search via Tavily then scrape results; returns a list of scraped strings."""
     try:
-        urls = tavily_search(query, _tavily_key)
+        urls = await asyncio.to_thread(tavily_search, query, _tavily_key)
         if not urls:
             return []
         results = await main_researcher(query, scrape_prompt)
