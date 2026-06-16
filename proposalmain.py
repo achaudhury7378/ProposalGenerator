@@ -4,7 +4,7 @@ from augment.servers.web_searcher import main_researcher
 from augment.tools.research_tool import deep_research
 import os
 import asyncio
-import configparser
+from prompts import PROMPTS
 from datetime import datetime
 
 from docx import Document
@@ -15,8 +15,7 @@ load_dotenv()
 _OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 _OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:26b")
 
-config = configparser.RawConfigParser()
-config.read('prompts.cfg')
+config = PROMPTS
 
 
 # --- Tools -------------------------------------------------------------------
@@ -86,7 +85,7 @@ solution_architect = ChatAgent(
 
 customer_researcher = ChatAgent(
     chat_client=_chat_client(),
-    name="CustomerEngagement_Analyst",
+    name="CustomerEngagementAnalyst",
     instructions=config['Client Engagement']['prompt'],
     description=config['Client Engagement']['description'],
     tools=_RESEARCH_TOOLS,
@@ -113,7 +112,7 @@ workflow = (
         MarketAnalyst=market_researcher,
         FinancialPlanner=financial_researcher,
         SolutionDesigner=solution_architect,
-        CustomerEngagement_Analyst=customer_researcher,
+        CustomerEngagementAnalyst=customer_researcher,
         RiskManager=risk_analyst,
     )
     .with_standard_manager(

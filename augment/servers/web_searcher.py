@@ -38,25 +38,3 @@ async def main_researcher(topic, prompt):
     data_out = await asyncio.gather(*tasks)
     return data_out
 
-async def market_researcher(topic):
-    return await main_researcher(topic, config["Market Analysis"]["crawler_prompt"])
-
-async def financial_researcher(topic):
-    return await main_researcher(topic, config["Financial Planning"]["crawler_prompt"])
-
-async def solution_researcher(topic):
-    return await main_researcher(topic, config["Solution Design"]["crawler_prompt"])
-
-async def customer_researcher(topic):
-    return await main_researcher(topic, config["Client Engagement"]["crawler_prompt"])
-
-async def risk_researcher(topic):
-    return await main_researcher(topic, config["Risk Management"]["crawler_prompt"])
-
-if __name__ == "__main__":
-    topic = "problems in inventory management"
-    # For testing purposes, we use asyncio.run
-    data = asyncio.run(market_researcher(topic))
-    print("Complete")
-    print(data)
-    print(len(data))

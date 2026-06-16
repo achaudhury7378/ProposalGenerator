@@ -44,7 +44,7 @@ flowchart TD
     Manager -->|delegates section| MA["MarketAnalyst"]
     Manager -->|delegates section| FP["FinancialPlanner"]
     Manager -->|delegates section| SD["SolutionDesigner"]
-    Manager -->|delegates section| CE["CustomerEngagement_Analyst"]
+    Manager -->|delegates section| CE["CustomerEngagementAnalyst"]
     Manager -->|delegates section| RM["RiskManager"]
 
     MA & FP & SD & CE & RM -->|use tools| Tools["Shared Research Tools<br/>web_search · deep_research_fn"]
@@ -178,7 +178,7 @@ persona, description, and crawler prompt from [prompts.cfg](prompts.cfg).
 | `MarketAnalyst` | `[Market Analysis]` | Industry trends, competition, SWOT, market sizing |
 | `FinancialPlanner` | `[Financial Planning]` | Cost/revenue models, ROI, break-even, funding |
 | `SolutionDesigner` | `[Solution Design]` | Architecture, features, implementation roadmap |
-| `CustomerEngagement_Analyst` | `[Client Engagement]` | Pain points, value propositions, engagement strategy |
+| `CustomerEngagementAnalyst` | `[Client Engagement]` | Pain points, value propositions, engagement strategy |
 | `RiskManager` | `[Risk Management]` | Risk assessment, compliance, mitigation/contingency |
 
 The manager itself is configured from `[Main Agent]` (planning/delegation) and

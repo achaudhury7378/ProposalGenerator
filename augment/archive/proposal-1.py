@@ -32,7 +32,7 @@ def extract_agent_responses(messages):
                 agent_responses['financial_planner_response'] = content
             elif source == "SolutionDesigner":
                 agent_responses['solution_architect_response'] = content
-            elif source == "CustomerEngagement_Analyst":
+            elif source == "CustomerEngagementAnalyst":
                 agent_responses['customer_researcher_response'] = content
             elif source == "RiskManager":
                 agent_responses['risk_analyst_response'] = content
@@ -156,7 +156,7 @@ solution_architect = AssistantAgent(
     )
 
 customer_researcher = AssistantAgent(
-        "CustomerEngagement_Analyst",
+        "CustomerEngagementAnalyst",
         model_client,
         tools=[tavily_search_tool],
         description="Identifies customer pain points, crafts value propositions, and designs engagement strategies. You have access to a search tool, you can use it to enhance your search.",
