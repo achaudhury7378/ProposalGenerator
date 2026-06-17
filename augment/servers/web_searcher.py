@@ -26,12 +26,12 @@ async def main_researcher(topic, prompt):
             source=url,
             config=_SCRAPER_CONFIG,
         )
-        result = await asyncio.to_thread(graph.run)
+        result = await asyncio.wait_for(asyncio.to_thread(graph.run),timeout=90)
         return result
 
     # 3. Run all URLs concurrently
     input_urls = await asyncio.to_thread(tavily_search, topic, tavily_key)
     tasks = [get_data(url, prompt) for url in input_urls]
-    data_out = await asyncio.gather(*tasks)
-    return data_out
+    data_out = await asyncio.gather(*tasks, return_exceptions=True)
+    return [r for r in data_out if not isinstance(r, Exception)]
 

@@ -18,6 +18,7 @@ _OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:26b")
 config = PROMPTS
 
 
+
 # --- Tools -------------------------------------------------------------------
 # Agent Framework consumes plain (async) callables as tools. The schema is
 # derived from the type hints and docstring, so no @kernel_function decorator
