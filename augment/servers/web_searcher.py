@@ -2,19 +2,19 @@ import asyncio
 from augment.tools.get_links import tavily_search
 from scrapegraphai.graphs import SmartScraperGraph
 import os
-
-tavily_key = os.getenv('TAVILY_API_KEY')
+from augment.settings import OLLAMA_HOST, OLLAMA_MODEL, TAVILY_API_KEY,OLLAMA_EMBED_MODEL
+tavily_key = TAVILY_API_KEY
 
 # ScrapegraphAI Ollama config — uses the local Ollama server
 _SCRAPER_CONFIG = {
     "llm": {
-        "model": "ollama/gemma4:26b",
+        "model": "ollama/"+OLLAMA_MODEL,
         "temperature": 0.1,
-        "base_url": "http://localhost:11434",
+        "base_url": OLLAMA_HOST,
     },
     "embeddings": {
-        "model": "ollama/nomic-embed-text",
-        "base_url": "http://localhost:11434",
+        "model": "ollama/"+OLLAMA_EMBED_MODEL,
+        "base_url": OLLAMA_HOST,
     },
     "verbose": False,
 }
@@ -30,7 +30,7 @@ async def main_researcher(topic, prompt):
         return result
 
     # 3. Run all URLs concurrently
-    input_urls = await asyncio.to_thread(tavily_search, topic, tavily_key)
+    input_urls = await asyncio.to_thread(tavily_search, topic, TAVILY_API_KEY)
     tasks = [get_data(url, prompt) for url in input_urls]
     data_out = await asyncio.gather(*tasks, return_exceptions=True)
     return [r for r in data_out if not isinstance(r, Exception)]

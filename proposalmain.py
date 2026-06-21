@@ -1,3 +1,4 @@
+from augment.settings import OLLAMA_HOST, OLLAMA_MODEL
 from agent_framework import ChatAgent, MagenticBuilder
 from agent_framework.openai import OpenAIChatClient
 from augment.servers.web_searcher import main_researcher
@@ -10,13 +11,10 @@ from datetime import datetime
 from docx import Document
 from dotenv import load_dotenv
 
-load_dotenv()
 
-_OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-_OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:26b")
+
 
 config = PROMPTS
-
 
 
 # --- Tools -------------------------------------------------------------------
@@ -52,8 +50,8 @@ _RESEARCH_TOOLS = [web_search, deep_research_fn]
 
 def _chat_client() -> OpenAIChatClient:
     return OpenAIChatClient(
-        model_id=_OLLAMA_MODEL,
-        base_url=f"{_OLLAMA_HOST}/v1",
+        model_id=OLLAMA_MODEL,
+        base_url=f"{OLLAMA_HOST}/v1",
         api_key="ollama",  # Ollama doesn't validate the key
     )
 

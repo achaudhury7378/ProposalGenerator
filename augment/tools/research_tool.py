@@ -5,20 +5,19 @@ from typing import List
 from openai import AsyncOpenAI
 from augment.tools.get_links import tavily_search
 from augment.servers.web_searcher import main_researcher
+from augment.settings import OLLAMA_HOST, OLLAMA_MODEL,OLLAMA_BASE_URL,TAVILY_API_KEY
 
-# Ollama runs an OpenAI-compatible API on localhost
 _ollama = AsyncOpenAI(
-    base_url="http://localhost:11434/v1",
-    api_key="ollama",  # Ollama doesn't validate the key
+    base_url=OLLAMA_BASE_URL,
+    api_key="ollama",
 )
-_model = "gemma4:26b"
-_tavily_key = os.getenv("TAVILY_API_KEY")
+
 
 
 async def _generate_queries(topic: str, num_queries: int) -> List[str]:
     """Ask the local Ollama model to produce diverse sub-queries for a topic."""
     resp = await _ollama.chat.completions.create(
-        model=_model,
+        model=OLLAMA_MODEL,
         messages=[
             {
                 "role": "system",
@@ -43,7 +42,7 @@ async def _generate_queries(topic: str, num_queries: int) -> List[str]:
 async def _scrape_query(query: str, scrape_prompt: str) -> List[str]:
     """Search via Tavily then scrape results; returns a list of scraped strings."""
     try:
-        urls = await asyncio.to_thread(tavily_search, query, _tavily_key)
+        urls = await asyncio.to_thread(tavily_search, query, TAVILY_API_KEY)
         if not urls:
             return []
         results = await main_researcher(query, scrape_prompt)
@@ -57,7 +56,7 @@ async def _synthesize(topic: str, chunks: List[str]) -> str:
     combined = "\n\n---SOURCE BREAK---\n\n".join(chunks[:12])  # keep context manageable
 
     resp = await _ollama.chat.completions.create(
-        model=_model,
+        model=OLLAMA_MODEL,
         messages=[
             {
                 "role": "system",
@@ -119,7 +118,7 @@ async def deep_research(topic: str, num_queries: int = 4) -> str:
 
         header = (
             f"## Deep Research Report: {topic}\n"
-            f"_Model: {_model} | Queries: {len(queries)} | Sources: {len(chunks)}_\n\n"
+            f"_Model: {OLLAMA_MODEL} | Queries: {len(queries)} | Sources: {len(chunks)}_\n\n"
         )
         return header + report
 
