@@ -1,14 +1,14 @@
 from augment.settings import OLLAMA_HOST, OLLAMA_MODEL
-from agent_framework import ChatAgent, MagenticBuilder
+from agent_framework import ChatAgent, MagenticBuilder, WorkflowBuilder, WorkflowExecutor, WorkflowContext, executor, ChatMessage
 from agent_framework.openai import OpenAIChatClient
 from augment.servers.web_searcher import main_researcher
 from augment.tools.research_tool import deep_research
 import os
 import asyncio
 from prompts import PROMPTS
-from datetime import datetime
+from augment.tools.docx_writer import _write_docx
 
-from docx import Document
+
 from dotenv import load_dotenv
 
 
@@ -105,6 +105,13 @@ risk_analyst = ChatAgent(
 # maps to the manager's instructions and the "synthesizer"/Combiner maps to the
 # final-answer prompt.
 
+
+
+async def write_docx_step(proposal: ChatMessage) -> str:
+    """Write the final proposal to a .docx file."""
+    path = await asyncio.to_thread(_write_docx, "Generated Proposal", [proposal.text])
+    print(f"[WORKFLOW] proposal written to: {path}")
+
 workflow = (
     MagenticBuilder()
     .participants(
@@ -118,11 +125,11 @@ workflow = (
         chat_client=_chat_client(),
         instructions=config['Main Agent']['prompt'],
         final_answer_prompt=config['Combiner']['prompt'],
-        max_round_count=3,
+        max_round_count=15,
     )
+    .on_result(write_docx_step)
     .build()
 )
-
 
 async def main():
     task = "Create a proposal for risks in supply chian given current scenarions in oil shipment in midlle east"
@@ -146,34 +153,7 @@ async def main():
     print(f"\n[WORKFLOW] proposal written to: {out_path}")
 
 
-def _write_docx(task: str, outputs: list) -> str:
-    """Write the accumulated proposal output(s) to a .docx file."""
-    doc = Document()
-    doc.add_heading("Business Proposal", level=0)
-    doc.add_paragraph(f"Task: {task}")
-    doc.add_paragraph(f"Generated: {datetime.now():%Y-%m-%d %H:%M:%S}")
 
-    if not outputs:
-        doc.add_paragraph("No output was produced by the workflow.")
-
-    for output in outputs:
-        for line in str(output).splitlines():
-            stripped = line.strip()
-            if not stripped:
-                continue
-            if stripped.startswith("### "):
-                doc.add_heading(stripped[4:], level=3)
-            elif stripped.startswith("## "):
-                doc.add_heading(stripped[3:], level=2)
-            elif stripped.startswith("# "):
-                doc.add_heading(stripped[2:], level=1)
-            else:
-                doc.add_paragraph(line)
-
-    filename = f"proposal_{datetime.now():%Y%m%d_%H%M%S}.docx"
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
-    doc.save(out_path)
-    return out_path
 
 
 if __name__ == "__main__":
